@@ -20,9 +20,6 @@ angular.module('myApp.map', ['ngRoute', 'myApp.services'])
                 .then(
                     function(res) { // success
                         MapService.addMarker(res);
-                        $scope.place.name = res.name;
-                        $scope.place.lat = res.geometry.location.lat();
-                        $scope.place.lng = res.geometry.location.lng();
                     },
                     function(status) { // error
                         $scope.apiError = true;

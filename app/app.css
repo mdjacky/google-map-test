@@ -29,6 +29,7 @@ h3 img {
 }
 #map {
   height: 400px;
+  width: 50%;
   margin: 20px 0;
   border-radius: 5px;
   border: 1px solid silver;
