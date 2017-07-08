@@ -9,9 +9,9 @@ angular.module('myApp.map', ['ngRoute', 'myApp.services'])
         });
     }])
 
-    .controller('MapCtrl', ['$scope', '$filter', 'MapService', 'ngTableParams', function($scope, $filter, MapService, ngTableParams) {
+    .controller('MapCtrl', ['$scope', '$rootScope', '$filter', 'MapService', 'ngTableParams', function($scope, $rootScope, $filter, MapService, ngTableParams) {
         $scope.searchPlace = '';
-        $scope.selectedAddress = '';
+        $scope.selected = {address: ''};
         $scope.searchResult = [];
         $scope.displayResult = [];
         $scope.isSearching = false;
@@ -48,8 +48,13 @@ angular.module('myApp.map', ['ngRoute', 'myApp.services'])
         });
 
         $scope.selectPlace = function(place){
-            $scope.selectedAddress = place.formatted_address;
+            $scope.selected.address = place.formatted_address;
             MapService.showPlace(place);
-        }
+        };
+
+        $rootScope.$on('placeSelectedInMap', function(event, place){
+            $scope.selectPlace(place);
+            $scope.tableParams.reload();
+        });
 
     }]);

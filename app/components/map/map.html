@@ -21,7 +21,7 @@
     <div id="map"></div>
 
     <table  ng-table="tableParams" class="table table-condensed table-bordered table-striped" >
-        <tr ng-repeat="place in displayResult" ng-click="selectPlace(place)" ng-class="{'isSelected': place.formatted_address === selectedAddress}">
+        <tr ng-repeat="place in displayResult" ng-click="selectPlace(place)" ng-class="{ 'isSelected':place.formatted_address === selected.address}">
             <td data-title="'Name'" sortable="'name'">
                 {{place.name}}
             </td>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp.services', [])
-    .factory('MapService', ['$q', function($q){
+    .factory('MapService', ['$q', '$rootScope', function($q, $rootScope){
         var service = {marker: []};
         var userGeoLocation = {
             lat: 49.2765926,
@@ -63,8 +63,8 @@ angular.module('myApp.services', [])
                 res[i].marker = marker;
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
-                        service.showPlace(res[i]);
-                    }
+                        $rootScope.$emit('placeSelectedInMap', res[i]);
+                    };
                 })(marker, i));
                 service.marker.push(marker);
                 service.map.fitBounds(service.bounds);
