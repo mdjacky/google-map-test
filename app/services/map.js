@@ -8,17 +8,9 @@ angular.module('myApp.services', [])
             lng: -123.12160260000002
         }; //Zenefits Office Geolocation
         var userCenter = new google.maps.LatLng(userGeoLocation.lat, userGeoLocation.lng);
+        var infowindow = new google.maps.InfoWindow();
 
         service.init = function () {
-            // if (navigator.geolocation) {
-            //     navigator.geolocation.getCurrentPosition(function(position) {
-            //         center = {
-            //             lat: position.coords.latitude,
-            //             lng: position.coords.longitude
-            //         };
-            //     });
-            // }
-
             var options = {
                 center: userCenter,
                 zoom: 13,
@@ -32,18 +24,17 @@ angular.module('myApp.services', [])
         service.search = function (str) {
             var d = $q.defer();
             service.bounds = new google.maps.LatLngBounds();
-            service.cleanAllMarkers();
+            cleanAllMarkers();
 
             var opts = {
                 location: service.map.getCenter(),
-                radius: '1000',
+                radius: '500',
                 query: str
             };
 
             var finalResults = [];
 
             service.places.textSearch(opts, function(results, status, pagination) {
-                console.log(results, status, pagination);
                 finalResults = finalResults.concat(results);
 
                 if (status !== 'OK' ) {
@@ -60,7 +51,6 @@ angular.module('myApp.services', [])
         };
 
         service.addMarker = function (res) {
-            var infowindow = new google.maps.InfoWindow();
             for (var i=0; i<res.length; i++){
                 var marker;
                 var position = new google.maps.LatLng(res[i].geometry.location.lat(), res[i].geometry.location.lng());
@@ -70,10 +60,10 @@ angular.module('myApp.services', [])
                     position: res[i].geometry.location,
                     animation: google.maps.Animation.DROP
                 });
+                res[i].marker = marker;
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
-                        infowindow.setContent(service.formatContents(res[i]));
-                        infowindow.open(map, marker);
+                        service.showPlace(res[i]);
                     }
                 })(marker, i));
                 service.marker.push(marker);
@@ -85,19 +75,26 @@ angular.module('myApp.services', [])
             }
         };
 
-        service.cleanAllMarkers = function(){
+        service.showPlace = function (place) {
+            infowindow.close();
+            infowindow.setContent(formatContents(place));
+            infowindow.open(service.map, place.marker);
+        };
+
+        function cleanAllMarkers (){
             service.marker.forEach(function(marker){
                 marker.setMap(null);
             });
-        };
+            service.marker = [];
+        }
 
-        service.formatContents = function (locationObj) {
+        function formatContents (locationObj) {
             return '<div class="info_content">' +
                 '<h3>' + locationObj.name + '</h3>' +
                 '<p>(' + locationObj.geometry.location.lat() + ', ' + locationObj.geometry.location.lng() + ')</p>' +
                 '<p>' + locationObj.formatted_address + '</p>' +
                 '</div>';
-        };
+        }
 
         return service;
     }]);

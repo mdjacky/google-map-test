@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container map-search">
     <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
         <b>API Error : </b>
         <span>{{ apiStatus }}</span>
@@ -9,11 +9,25 @@
             <input name="place" type="text" class="form-control"
                    ng-model="searchPlace" required autofocus />
             <span class="input-group-btn">
-                <button class="btn btn-primary"
-                        ng-disabled="searchForm.$invalid">Search</button>
+                <button class="btn btn-primary" ng-disabled="isSearching"
+                        ng-disabled="searchForm.$invalid">
+                    {{isSearching? 'Searching...':'Search'}}
+
+                </button>
             </span>
         </div>
     </form>
 
     <div id="map"></div>
+
+    <table  ng-table="tableParams" class="table table-condensed table-bordered table-striped" >
+        <tr ng-repeat="place in displayResult" ng-click="selectPlace(place)" ng-class="{'isSelected': place.formatted_address === selectedAddress}">
+            <td data-title="'Name'" sortable="'name'">
+                {{place.name}}
+            </td>
+            <td data-title="'Address'" sortable="'formatted_address'">
+                {{place.formatted_address}}
+            </td>
+        </tr>
+    </table>
 </div>
